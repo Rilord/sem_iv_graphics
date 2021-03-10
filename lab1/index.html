@@ -141,120 +141,135 @@
 
       }
 
-      function dotCompare(a, b) {
-        return JSON.stringify(a) === JSON.stringify(b);
+      const slope = (coor1, coor2) => (coor2.y - coor1.y) / (coor2.x - coor1.x);
+      const areCollinear = (a, b, c) => {
+        return slope(a, b) === slope(b, c) && slope(b, c) === slope(c, a);
+      };
+
+
+function dotCompare(a, b) {
+  return JSON.stringify(a) === JSON.stringify(b);
+}
+
+function drawAnswer(c, triangle, max_i, max_j) {
+  stroke('black');
+
+  strokeWeight(1);
+
+  circle(c.x, c.y, c.r * 2.0);
+
+  line(triangle.a.x, triangle.a.y, 
+    triangle.b.x, triangle.b.y);
+  line(triangle.a.x, triangle.a.y, 
+    triangle.c.x, triangle.c.y);
+  line(triangle.b.x, triangle.b.y, 
+    triangle.c.x, triangle.c.y);
+
+  drawTickAxes(0,1,10, 400, 300)
+
+  stroke('red');
+
+
+  strokeWeight(2);
+
+  point(c.x, c.y);
+  point(triangle.a.x, triangle.a.y);
+  point(triangle.b.x, triangle.b.y);
+  point(triangle.c.x, triangle.c.y);
+
+  stroke('green');
+
+  line(points[max_i].x, points[max_i].y, 
+    points[max_j].x, points[max_j].y);
+
+  stroke('red');
+
+  point(points[max_i].x, points[max_i].y);
+  point(points[max_j].x, points[max_j].y);
+
+  stroke('black');
+
+
+  strokeWeight(1);
+
+  text('max', (points[max_j].x + points[max_i].x) / 2 + 10, (points[max_j].y + points[max_i].y) / 2 + 10);
+
+
+}
+
+
+function findTask(circle, abc) {
+  let triangles = new Array();
+
+  for (let i = 0; i < points.length; i++) {
+    for (let j = i + 1; j < points.length; j++) {
+      for (let k = j + 1; k < points.length; k++) {
+        if (areCollinear(points[i], points[j], points[k])) {
+          continue;
+        }
+          let t = new Triangle(points[i], points[j], points[k]); 
+        triangles.push(t);
+      }
+    }
+  }
+
+  console.log(triangles);
+
+  var max_dist = 0, max_i = 0, max_j = 1, max_triangle = 0;
+
+  for (let i = 0; i < triangles.length; i++) {
+    let c = new Circle(0, 0, 0);
+
+    c.circumCircle(triangles[i].a, triangles[i].b, triangles[i].c);
+
+    for (let k = 0; k < points.length; k++) {
+      if (dotCompare(triangles[i].a, points[k]) 
+        || dotCompare(triangles[i].b, points[k]) 
+        || dotCompare(triangles[i].c, points[k])) {
+        continue;
       }
 
-      function drawAnswer(c, triangle, max_i, max_j) {
-        stroke('black');
-
-        strokeWeight(1);
-
-        circle(c.x, c.y, c.r * 2.0);
-
-        line(triangle.a.x, triangle.a.y, 
-          triangle.b.x, triangle.b.y);
-        line(triangle.a.x, triangle.a.y, 
-          triangle.c.x, triangle.c.y);
-        line(triangle.b.x, triangle.b.y, 
-          triangle.c.x, triangle.c.y);
-
-
-        drawTickAxes(0,1,10, 400, 300)
-
-
-        stroke('red');
-
-
-        strokeWeight(2);
-
-        point(c.x, c.y);
-        point(triangle.a.x, triangle.a.y);
-        point(triangle.b.x, triangle.b.y);
-        point(triangle.c.x, triangle.c.y);
-
-        stroke('green');
-
-        line(points[max_i].x, points[max_i].y, 
-          points[max_j].x, points[max_j].y);
-
-        stroke('red');
-
-        point(points[max_i].x, points[max_i].y);
-        point(points[max_j].x, points[max_j].y);
-
-        stroke('black');
-
-        text('max', (points[max_j].x + points[max_i].x) / 2 + 10, (points[max_j].y + points[max_i].y) / 2 + 10);
-
-
+      if ((points[k].x - c.x) ** 2 + (points[k].y - c.y) ** 2 >= c.r * c.r) {
+        continue;
       }
 
-
-      function findTask(circle, abc) {
-        let triangles = new Array();
-
-        for (let i = 0; i < points.length; i++) {
-          for (let j = i + 1; j < points.length; j++) {
-            for (let k = j + 1; k < points.length; k++) {
-              let t = new Triangle(points[i], points[j], points[k]); 
-              triangles.push(t);
-            }
-          }
+      for (let j = k + 1; j < points.length; j++) {
+        if (dotCompare(triangles[i].a, points[j]) 
+          || dotCompare(triangles[i].b, points[j]) 
+          || dotCompare(triangles[i].c, points[j])) {
+          continue;
         }
 
-
-        var max_dist = 0, max_i = 0, max_j = 1, max_triangle = 0;
-
-        for (let i = 0; i < triangles.length; i++) {
-          let c = new Circle(0, 0, 0);
-
-          c.circumCircle(triangles[i].a, triangles[i].b, triangles[i].c);
-
-          for (let k = 0; k < points.length; k++) {
-            if (dotCompare(triangles[i].a, points[k]) 
-              || dotCompare(triangles[i].b, points[k]) 
-              || dotCompare(triangles[i].c, points[k])) {
-              continue;
-            }
-
-            if (points[k].x ** 2 + points[k].y ** 2 >= c.r * c.r - 0.0000001) {
-              continue;
-            }
-
-            for (let j = k + 1; j < points.length; j++) {
-              if (dotCompare(triangles[i].a, points[j]) 
-                || dotCompare(triangles[i].b, points[j]) 
-                || dotCompare(triangles[i].c, points[j])) {
-                continue;
-              }
-
-              if (points[j].x ** 2 + points[j].y ** 2 >= c.r * c.r - 0.0000001) {
-                continue;
-              }
-
-
-              if (max_dist < Math.sqrt((points[k].x - points[j].x) 
-                ** 2 + (points[k].y - points[j].y) ** 2)) {
-                max_dist = Math.sqrt((points[k].x - points[j].x) ** 
-                  2 + (points[k].y - points[j].y) ** 2); 
-                max_i = k; max_j = j; max_triangle = i;
-              }
-            }
-          }
-
+        if ((points[j].x - c.x) ** 2 + (points[j].y - c.y) ** 2 >= c.r * c.r) {
+          continue;
         }
 
-        console.log(max_dist, max_i, max_j, max_triangle);
-
-        let res = new Circle(0, 0, 0);
-
-        res.circumCircle(triangles[max_triangle].a, triangles[max_triangle].b, triangles[max_triangle].c);
-
-        drawAnswer(res, triangles[max_triangle], max_i, max_j);
+        console.log(triangles[i], points[j], points[k]);
 
 
+        if (max_dist < Math.sqrt((points[k].x - points[j].x) 
+          ** 2 + (points[k].y - points[j].y) ** 2)) {
+          max_dist = Math.sqrt((points[k].x - points[j].x) ** 
+            2 + (points[k].y - points[j].y) ** 2); 
+          console.log(max_dist);
+          max_i = k; max_j = j; max_triangle = i;
+        }
       }
+    }
+
+  }
+
+  console.log(max_dist, max_i, max_j, max_triangle);
+  if (max_dist !== 0) {
+    let res = new Circle(0, 0, 0);
+
+    res.circumCircle(triangles[max_triangle].a, triangles[max_triangle].b, triangles[max_triangle].c);
+
+    drawAnswer(res, triangles[max_triangle], max_i, max_j);
+  }
+
+
+}
     </script>
   </head>
   <body>
@@ -262,6 +277,10 @@
       <input type="text" id="dot_input"></input>
       <button type="button" onclick="addDot()">Добавить точку</button>
       <button type="button" onclick="findTask()">Найти кратчайший отрезок</button>
+      <p>
+      <center><h2>Условие</h2></center>
+        На плоскости дано множество точек. Найти такой треугольник с вершинами в этих точках? для которого разность концов точек этого множества, попавших внутрь треугольника и за его пределы, но внутри описанной окружности? максимальна.
+      </p>
     </div>
   </body>
 </html>
