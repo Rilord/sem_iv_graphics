@@ -1,0 +1,201 @@
+{
+  "currentId": 7,
+  "modules": {
+    "1": {
+      "absPath": "/home/kodor/proj/graphics/lab3/index.ts",
+      "dependencies": [
+        2,
+        3,
+        6
+      ],
+      "id": 1,
+      "mtime": 1617707284935,
+      "packageId": "default",
+      "publicPath": "index.ts"
+    },
+    "2": {
+      "absPath": "/home/kodor/proj/graphics/lab3/node_modules/fuse-box/modules/fuse-box-hot-reload/clientHotReload.ts",
+      "dependencies": [
+        4
+      ],
+      "id": 2,
+      "mtime": 499162500000,
+      "packageId": "fuse-box-hot-reload@1.0.0",
+      "publicPath": "node_modules/fuse-box/modules/fuse-box-hot-reload/clientHotReload.ts"
+    },
+    "3": {
+      "absPath": "/home/kodor/proj/graphics/lab3/node_modules/jquery/dist/jquery.js",
+      "dependencies": [],
+      "id": 3,
+      "mtime": 499162500000,
+      "packageId": "jquery@3.6.0",
+      "publicPath": "node_modules/jquery/dist/jquery.js"
+    },
+    "4": {
+      "absPath": "/home/kodor/proj/graphics/lab3/node_modules/fuse-box/modules/fuse-box-websocket/index.js",
+      "dependencies": [
+        5
+      ],
+      "id": 4,
+      "mtime": 499162500000,
+      "packageId": "fuse-box-websocket@1.0.0",
+      "publicPath": "node_modules/fuse-box/modules/fuse-box-websocket/index.js"
+    },
+    "5": {
+      "absPath": "/home/kodor/proj/graphics/lab3/node_modules/fuse-box/modules/events/index.js",
+      "dependencies": [],
+      "id": 5,
+      "mtime": 499162500000,
+      "packageId": "events@1.0.0",
+      "publicPath": "node_modules/fuse-box/modules/events/index.js"
+    },
+    "6": {
+      "absPath": "/home/kodor/proj/graphics/lab3/node_modules/chart.js/dist/Chart.js",
+      "dependencies": [
+        7
+      ],
+      "id": 6,
+      "mtime": 499162500000,
+      "packageId": "chart.js@2.9.4",
+      "publicPath": "node_modules/chart.js/dist/Chart.js"
+    },
+    "7": {
+      "absPath": "/home/kodor/proj/graphics/lab3/node_modules/moment/moment.js",
+      "dependencies": [],
+      "id": 7,
+      "mtime": 499162500000,
+      "packageId": "moment@2.29.1",
+      "publicPath": "node_modules/moment/moment.js"
+    }
+  },
+  "packages": {
+    "default": {
+      "type": 0,
+      "publicName": "default",
+      "isUserPackage": true,
+      "isExternalPackage": false
+    },
+    "fuse-box-hot-reload@1.0.0": {
+      "type": 1,
+      "meta": {
+        "fusebox": {
+          "dev": true
+        },
+        "name": "fuse-box-hot-reload",
+        "packageJSONLocation": "/home/kodor/proj/graphics/lab3/node_modules/fuse-box/modules/fuse-box-hot-reload/package.json",
+        "packageRoot": "/home/kodor/proj/graphics/lab3/node_modules/fuse-box/modules/fuse-box-hot-reload",
+        "version": "1.0.0",
+        "entryAbsPath": "/home/kodor/proj/graphics/lab3/node_modules/fuse-box/modules/fuse-box-hot-reload/clientHotReload.ts",
+        "entryFuseBoxPath": "clientHotReload.js"
+      },
+      "publicName": "fuse-box-hot-reload@1.0.0",
+      "isUserPackage": false,
+      "isExternalPackage": true,
+      "deps": [
+        2
+      ],
+      "mtime": 499162500000
+    },
+    "jquery@3.6.0": {
+      "type": 1,
+      "meta": {
+        "name": "jquery",
+        "packageJSONLocation": "/home/kodor/proj/graphics/lab3/node_modules/jquery/package.json",
+        "packageRoot": "/home/kodor/proj/graphics/lab3/node_modules/jquery",
+        "version": "3.6.0",
+        "entryAbsPath": "/home/kodor/proj/graphics/lab3/node_modules/jquery/dist/jquery.js",
+        "entryFuseBoxPath": "dist/jquery.js"
+      },
+      "publicName": "jquery@3.6.0",
+      "isUserPackage": false,
+      "isExternalPackage": true,
+      "deps": [
+        3
+      ],
+      "mtime": 1617112092215
+    },
+    "fuse-box-websocket@1.0.0": {
+      "type": 1,
+      "meta": {
+        "fusebox": {
+          "dev": true
+        },
+        "name": "fuse-box-websocket",
+        "packageJSONLocation": "/home/kodor/proj/graphics/lab3/node_modules/fuse-box/modules/fuse-box-websocket/package.json",
+        "packageRoot": "/home/kodor/proj/graphics/lab3/node_modules/fuse-box/modules/fuse-box-websocket",
+        "version": "1.0.0",
+        "entryAbsPath": "/home/kodor/proj/graphics/lab3/node_modules/fuse-box/modules/fuse-box-websocket/index.js",
+        "entryFuseBoxPath": "index.js"
+      },
+      "publicName": "fuse-box-websocket@1.0.0",
+      "isUserPackage": false,
+      "isExternalPackage": true,
+      "deps": [
+        4
+      ],
+      "mtime": 499162500000
+    },
+    "events@1.0.0": {
+      "type": 1,
+      "meta": {
+        "fusebox": {
+          "polyfill": true
+        },
+        "name": "events",
+        "packageJSONLocation": "/home/kodor/proj/graphics/lab3/node_modules/fuse-box/modules/events/package.json",
+        "packageRoot": "/home/kodor/proj/graphics/lab3/node_modules/fuse-box/modules/events",
+        "version": "1.0.0",
+        "entryAbsPath": "/home/kodor/proj/graphics/lab3/node_modules/fuse-box/modules/events/index.js",
+        "entryFuseBoxPath": "index.js"
+      },
+      "publicName": "events@1.0.0",
+      "isUserPackage": false,
+      "isExternalPackage": true,
+      "deps": [
+        5
+      ],
+      "mtime": 499162500000
+    },
+    "chart.js@2.9.4": {
+      "type": 1,
+      "meta": {
+        "name": "chart.js",
+        "packageJSONLocation": "/home/kodor/proj/graphics/lab3/node_modules/chart.js/package.json",
+        "packageRoot": "/home/kodor/proj/graphics/lab3/node_modules/chart.js",
+        "version": "2.9.4",
+        "entryAbsPath": "/home/kodor/proj/graphics/lab3/node_modules/chart.js/dist/Chart.js",
+        "entryFuseBoxPath": "dist/Chart.js"
+      },
+      "publicName": "chart.js@2.9.4",
+      "isUserPackage": false,
+      "isExternalPackage": true,
+      "deps": [
+        6
+      ],
+      "mtime": 1617112092215
+    },
+    "moment@2.29.1": {
+      "type": 1,
+      "meta": {
+        "name": "moment",
+        "packageJSONLocation": "/home/kodor/proj/graphics/lab3/node_modules/moment/package.json",
+        "packageRoot": "/home/kodor/proj/graphics/lab3/node_modules/moment",
+        "version": "2.29.1",
+        "entryAbsPath": "/home/kodor/proj/graphics/lab3/node_modules/moment/moment.js",
+        "entryFuseBoxPath": "moment.js"
+      },
+      "publicName": "moment@2.29.1",
+      "isUserPackage": false,
+      "isExternalPackage": true,
+      "deps": [
+        7
+      ],
+      "mtime": 1617112092215
+    }
+  },
+  "ctx": {
+    "linkedReferences": {},
+    "systemDependencies": {},
+    "tsConfigAtPaths": []
+  }
+}
