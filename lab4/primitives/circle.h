@@ -1,12 +1,12 @@
 #ifndef CIRCLE_
 #define CIRCLE_
 #include "GL/glew.h"
-#include <glm/fwd.hpp>
+#include "glm/fwd.hpp"
 #include <vector>
 
 #include "glm/glm.hpp"
-#define SCREEN_WIDTH 800
-#define SCREEN_HEIGHT 600
+#define SCREEN_WIDTH 1280
+#define SCREEN_HEIGHT 720
 
 
 using std::vector;
@@ -19,8 +19,6 @@ struct vertex {
 
 using circle_draw_function =  void (*)(vector<vertex> &, glm::vec2, 
         float);
-using ellpise_draw_function = void (*)(vector<vertex> &, glm::vec2, 
-        float, float); 
 
 void circle_bresenhem (vector<vertex> &vertices, glm::vec2 center, float radius);
 void circle_canonical (vector<vertex> &vertices, glm::vec2 center, float radius);
@@ -49,7 +47,7 @@ class circle {
 
 };
 
-class circle_spectre {
+class circle_spectrum {
     float radius;
     float step;
     int n;
@@ -59,8 +57,8 @@ class circle_spectre {
     circle_draw_function set_vertices;
     
     public:
-        circle_spectre() = default;
-        circle_spectre(float _radius, 
+        circle_spectrum() = default;
+        circle_spectrum(float _radius, 
                 float _step, int _n, glm::vec4 _color,
                 glm::vec2 _center, 
                 circle_draw_function func) 
@@ -70,9 +68,11 @@ class circle_spectre {
             }
         }
         void render();
-        ~circle_spectre() = default;
+        ~circle_spectrum() = default;
     
 };
+
+void set_vertex_circle(vector<vertex> &verticex, glm::vec2 center, float x, float y);
 
 
 

@@ -1,7 +1,7 @@
-#include "GL/glew.h"
+#include <GL/glew.h>
 #include "GLFW/glfw3.h"
 #include <cstring>
-#include <glm/fwd.hpp>
+#include "glm/fwd.hpp"
 #include <iostream>
 #include <math.h>
 #include <tuple>
@@ -9,10 +9,11 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl2.h"
 #include "circle.h"
+#include "ellipse.h"
 
 const int steps = 100;
 const float angle = 3.1415926 * 2.f / steps;
-float aspect = (float) 800 / 600;
+float aspect = (float) SCREEN_WIDTH / SCREEN_HEIGHT;
 const char *glsl_version = "#version 330";
 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -36,7 +37,7 @@ int main(void) {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 
-    window = glfwCreateWindow(800, 600, "window", NULL, NULL);
+    window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "window", NULL, NULL);
 
     if (!window) {
         std::cout << "[STATUS] failed\n";
@@ -75,7 +76,9 @@ int main(void) {
 
 
     std::vector<circle> circle_array;
-    std::vector<circle_spectre> circle_spectre_array;
+    std::vector<circle_spectrum> circle_spectrum_array;
+    std::vector<ellipse> ellipse_array;
+    std::vector<ellipse_spectrum> ellipse_spectrum_array;
     
     const char *colors[] = { "White", "Black" };
     const char *algorithms[] = { "Canonical",  "Bresenhem", "Midpoint", "Parametrical" };
@@ -91,13 +94,13 @@ int main(void) {
 
     // ellipse data
 
-    float ellipse_radius_x = 0.0f;
-    float ellipse_radius_y = 0.0f;
+    float ellipse_a = 0.0f;
+    float ellipse_b = 0.0f;
     float ellipse_center[2] = { 0.0f };
 
-    // specter data
-    float specter_step = 0.0f;
-    int specter_n = 0;
+    // spectrum data
+    float spectrum_step = 0.0f;
+    int spectrum_n = 0;
 
 
     while(!glfwWindowShouldClose(window)) {
@@ -199,36 +202,79 @@ int main(void) {
             }
         }
 
-        ImGui::Text("Specter");
+        ImGui::Text("Spectrum");
 
-        ImGui::InputFloat("Specter step", &specter_step);
-        ImGui::InputInt("Specter number", &specter_n);
+        ImGui::InputFloat("Specter step", &spectrum_step);
+        ImGui::InputInt("Specter number", &spectrum_n);
 
-        if (ImGui::Button("Draw circle specter")) {
+        if (ImGui::Button("Draw circle spectrum")) {
             glm::vec4 col(draw_color.x, draw_color.y, draw_color.z, draw_color.w);
             glm::vec2 c(circle_center[0], circle_center[1]);
             if (strcmp(algortithm, "Bresenhem") == 0) {
-                circle_spectre_array.push_back(circle_spectre(circle_radius, 
-                            specter_step, specter_n, 
+                circle_spectrum_array.push_back(circle_spectrum(circle_radius, 
+                            spectrum_step, spectrum_n, 
                             col, c, circle_bresenhem));
             } else if(strcmp(algortithm, "Canonical") == 0) {
-                circle_spectre_array.push_back(circle_spectre(circle_radius, 
-                            specter_step, specter_n, 
+                circle_spectrum_array.push_back(circle_spectrum(circle_radius, 
+                            spectrum_step, spectrum_n, 
                             col, c, circle_canonical));
             } else if(strcmp(algortithm, "Midpoint") == 0) {
-                circle_spectre_array.push_back(circle_spectre(circle_radius, 
-                            specter_step, specter_n, 
+                circle_spectrum_array.push_back(circle_spectrum(circle_radius, 
+                            spectrum_step, spectrum_n, 
                             col, c, circle_midpoint));
             } else if(strcmp(algortithm, "Parametrical") == 0) {
-                circle_spectre_array.push_back(circle_spectre(circle_radius, 
-                            specter_step, specter_n, 
+                circle_spectrum_array.push_back(circle_spectrum(circle_radius, 
+                            spectrum_step, spectrum_n, 
                             col, c, circle_parametrical));
+            }
+        }
+
+        ImGui::Text("Ellipse");
+        ImGui::InputFloat2("Ellipse center(x, y)", ellipse_center);
+        ImGui::InputFloat("Ellipse a", &ellipse_a);
+        ImGui::InputFloat("Ellipse b", &ellipse_b);
+
+        if (ImGui::Button("Draw ellipse")) {
+            glm::vec4 col(draw_color.x, draw_color.y, draw_color.z, draw_color.w);
+            glm::vec2 c(ellipse_center[0], ellipse_center[1]);
+            if (strcmp(algortithm, "Bresenhem") == 0) {
+                ellipse_array.push_back(ellipse(ellipse_a, ellipse_b, c,
+                            col, ellipse_bresenhem));
+            } else if(strcmp(algortithm, "Canonical") == 0) {
+                ellipse_array.push_back(ellipse(ellipse_a, ellipse_b, c,
+                            col, ellipse_canonical));
+            } else if(strcmp(algortithm, "Midpoint") == 0) {
+                ellipse_array.push_back(ellipse(ellipse_a, ellipse_b, c,
+                            col, ellipse_midpoint));
+            } else if(strcmp(algortithm, "Parametrical") == 0) {
+                ellipse_array.push_back(ellipse(ellipse_a, ellipse_b, c,
+                            col, ellipse_parametrical));
+            }
+        }
+
+        if (ImGui::Button("Draw ellipse spectrum")) {
+            glm::vec4 col(draw_color.x, draw_color.y, draw_color.z, draw_color.w);
+            glm::vec2 c(ellipse_center[0], ellipse_center[1]);
+            if (strcmp(algortithm, "Bresenhem") == 0) {
+                ellipse_spectrum_array.push_back(ellipse_spectrum(ellipse_a, ellipse_b, c,
+                            col, spectrum_n, spectrum_step, ellipse_bresenhem));
+            } else if(strcmp(algortithm, "Canonical") == 0) {
+                ellipse_spectrum_array.push_back(ellipse_spectrum(ellipse_a, ellipse_b, c,
+                            col, spectrum_n, spectrum_step, ellipse_canonical));
+            } else if(strcmp(algortithm, "Midpoint") == 0) {
+                ellipse_spectrum_array.push_back(ellipse_spectrum(ellipse_a, ellipse_b, c,
+                            col, spectrum_n, spectrum_step, ellipse_midpoint));
+            } else if(strcmp(algortithm, "Parametrical") == 0) {
+                ellipse_spectrum_array.push_back(ellipse_spectrum(ellipse_a, ellipse_b, c,
+                            col, spectrum_n, spectrum_step, ellipse_parametrical));
             }
         }
 
         if (ImGui::Button("Clear")) {
             circle_array.clear();
-            circle_spectre_array.clear();
+            circle_spectrum_array.clear();
+            ellipse_array.clear();
+            ellipse_spectrum_array.clear();
         }
 
         //ImGui::Text("Spectre");
@@ -240,7 +286,7 @@ int main(void) {
         //ImGui::InputFloat("circles number", tmp);
 
 
-        //if (ImGui::Button("Draw spectre")) {
+        //if (ImGui::Button("Draw spectrum")) {
         //    
         //}
 
@@ -256,7 +302,7 @@ int main(void) {
         //ImGui::InputFloat("axis step", tmp);
         //ImGui::InputFloat("ellipses number", tmp);
 
-        //if (ImGui::Button("Draw ellipse spectre")) {
+        //if (ImGui::Button("Draw ellipse spectrum")) {
         //    
         //}
 
@@ -279,8 +325,17 @@ int main(void) {
             c.render();
         }
 
-        for (auto &specter: circle_spectre_array) {
-            specter.render();
+        for (auto &spectrum: circle_spectrum_array) {
+            spectrum.render();
+        }
+
+
+        for (auto &e: ellipse_array) {
+            e.render();
+        }
+
+        for (auto &e: ellipse_spectrum_array) {
+            e.render();
         }
 
         //
