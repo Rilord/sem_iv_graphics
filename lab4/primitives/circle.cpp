@@ -41,7 +41,7 @@ void circle_bresenhem (vector<vertex> &vertices, glm::vec2 center, float radius)
                 x++;
             }
         }
-        set_vertex_circle(vertices, center,  x, y);
+        set_vertex_circle(vertices, center,  center.x + x, center.y + y);
 
     }
 }

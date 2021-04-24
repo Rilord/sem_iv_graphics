@@ -8,8 +8,12 @@
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl2.h"
+#include "implot.h"
 #include "circle.h"
 #include "ellipse.h"
+#include <chrono>
+#include <thread>
+    
 
 const int steps = 100;
 const float angle = 3.1415926 * 2.f / steps;
@@ -23,6 +27,11 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 }
 
 
+using std::chrono::high_resolution_clock;
+using std::chrono::duration_cast;
+using std::chrono::duration;
+using std::chrono::milliseconds;
+using std::chrono::nanoseconds;
 
 int main(void) {
 
@@ -71,6 +80,8 @@ int main(void) {
     ImVec4 clear_color = ImVec4(1.0f, 1.0f, 1.0f, 1.00f);
     ImVec4 draw_color = ImVec4(0.0f, 0.0, 0.0, 1.00f);
 
+    ImPlot::CreateContext();
+
     glOrtho(-aspect, aspect, -1, 1, -1, 1);
     glLoadIdentity();
 
@@ -100,8 +111,68 @@ int main(void) {
 
     // spectrum data
     float spectrum_step = 0.0f;
+
+    float spectrum_step_a = 0.0f;
+    float spectrum_step_b = 0.0f;
+
     int spectrum_n = 0;
 
+
+    vector<vertex> test_v;
+
+    vector<double> bresenhem_data;
+    vector<double> parametrical_data;
+    vector<double> canonical_data;
+    vector<double> midpoint_data;
+    vector<double> x_data;
+
+    for (auto i = 10; i < 1000; i *= 10) {
+        x_data.push_back(i);
+        double sum = 0;
+        for (auto j = 0 ; j < 1000; j++) {
+            auto t1 = high_resolution_clock::now();
+            circle_bresenhem(test_v, glm::vec2(0, 0), i);
+            auto t2 = high_resolution_clock::now();
+            sum += (duration_cast<nanoseconds>(t2 - t1).count());
+        }
+        bresenhem_data.push_back(sum / 1000);
+        
+    }
+
+    for (auto i = 10; i < 1000; i *= 10) {
+        double sum = 0;
+        for (auto j = 0 ; j < 1000; j++) {
+            auto t1 = high_resolution_clock::now();
+            circle_parametrical(test_v, glm::vec2(0, 0), i);
+            auto t2 = high_resolution_clock::now();
+            sum += (duration_cast<nanoseconds>(t2 - t1).count());
+        }
+        parametrical_data.push_back(sum / 1000);
+        
+    }
+
+
+    for (auto i = 10; i < 1000; i *= 10) {
+        double sum = 0;
+        for (auto j = 0 ; j < 1000; j++) {
+            auto t1 = high_resolution_clock::now();
+            circle_canonical(test_v, glm::vec2(0, 0), i);
+            auto t2 = high_resolution_clock::now();
+            sum += (duration_cast<nanoseconds>(t2 - t1).count());
+        }
+        canonical_data.push_back(sum / 1000);
+    }
+
+    for (auto i = 10; i < 1000; i *= 10) {
+        double sum = 0;
+        for (auto j = 0 ; j < 1000; j++) {
+            auto t1 = high_resolution_clock::now();
+            circle_midpoint(test_v, glm::vec2(0, 0), i);
+            auto t2 = high_resolution_clock::now();
+            sum += (duration_cast<nanoseconds>(t2 - t1).count());
+        }
+        midpoint_data.push_back(sum / 1000);
+    }
 
     while(!glfwWindowShouldClose(window)) {
         glfwPollEvents();
@@ -252,21 +323,34 @@ int main(void) {
             }
         }
 
+        ImGui::InputFloat("Ellipse step a", &spectrum_step_a);
+        ImGui::InputFloat("Ellipse step b", &spectrum_step_b);
+
         if (ImGui::Button("Draw ellipse spectrum")) {
             glm::vec4 col(draw_color.x, draw_color.y, draw_color.z, draw_color.w);
             glm::vec2 c(ellipse_center[0], ellipse_center[1]);
             if (strcmp(algortithm, "Bresenhem") == 0) {
                 ellipse_spectrum_array.push_back(ellipse_spectrum(ellipse_a, ellipse_b, c,
-                            col, spectrum_n, spectrum_step, ellipse_bresenhem));
+                            col, spectrum_n, spectrum_step_a, spectrum_step_b, ellipse_bresenhem));
             } else if(strcmp(algortithm, "Canonical") == 0) {
                 ellipse_spectrum_array.push_back(ellipse_spectrum(ellipse_a, ellipse_b, c,
-                            col, spectrum_n, spectrum_step, ellipse_canonical));
+                            col, spectrum_n, spectrum_step_a, spectrum_step_b, ellipse_canonical));
             } else if(strcmp(algortithm, "Midpoint") == 0) {
                 ellipse_spectrum_array.push_back(ellipse_spectrum(ellipse_a, ellipse_b, c,
-                            col, spectrum_n, spectrum_step, ellipse_midpoint));
+                            col, spectrum_n, spectrum_step_a, spectrum_step_b, ellipse_midpoint));
             } else if(strcmp(algortithm, "Parametrical") == 0) {
                 ellipse_spectrum_array.push_back(ellipse_spectrum(ellipse_a, ellipse_b, c,
-                            col, spectrum_n, spectrum_step, ellipse_parametrical));
+                            col, spectrum_n, spectrum_step_a, spectrum_step_b, ellipse_parametrical));
+            }
+        }
+
+        if (ImGui::CollapsingHeader("Stats")) {
+            if (ImPlot::BeginPlot("Time measurments")) {
+                ImPlot::PlotScatter("Bresenhem", bresenhem_data.data(), x_data.data(), bresenhem_data.size());
+                ImPlot::PlotScatter("Parametrical", parametrical_data.data(), x_data.data(), parametrical_data.size());
+                ImPlot::PlotScatter("Midpoint", midpoint_data.data(), x_data.data(), midpoint_data.size());
+                ImPlot::PlotScatter("Canonical", canonical_data.data(), x_data.data(), canonical_data.size());
+                ImPlot::EndPlot();
             }
         }
 
@@ -277,38 +361,6 @@ int main(void) {
             ellipse_spectrum_array.clear();
         }
 
-        //ImGui::Text("Spectre");
-
-        //ImGui::InputFloat2("start and end radius", tmp);
-
-        //ImGui::InputFloat("radius step", tmp);
-
-        //ImGui::InputFloat("circles number", tmp);
-
-
-        //if (ImGui::Button("Draw spectrum")) {
-        //    
-        //}
-
-        //ImGui::Text("Ellipse");
-
-        //ImGui::InputFloat2("center x | center y", tmp);
-        //ImGui::InputFloat2("x axis length | y axis length", tmp);
-
-        //if (ImGui::Button("Draw ellipse")) {
-        //    
-        //}
-
-        //ImGui::InputFloat("axis step", tmp);
-        //ImGui::InputFloat("ellipses number", tmp);
-
-        //if (ImGui::Button("Draw ellipse spectrum")) {
-        //    
-        //}
-
-        //if (ImGui::Button("Clear")) {
-        //    
-        //}
 
         ImGui::End();
         ImGui::Render();
@@ -345,11 +397,12 @@ int main(void) {
 
         glfwMakeContextCurrent(window);
         glfwSwapBuffers(window);
-    
+
     }
 
     ImGui_ImplOpenGL2_Shutdown();
     ImGui_ImplGlfw_Shutdown();
+    ImPlot::DestroyContext();
     ImGui::DestroyContext();
 
     glfwDestroyWindow(window);

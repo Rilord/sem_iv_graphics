@@ -33,17 +33,17 @@ class ellipse_spectrum {
     glm::vec2 center;
     glm::vec4 color; 
     int n;
-    float step;
+    float step_a, step_b;
     ellipse_draw_function set_vertices;
     public:
         ellipse_spectrum() = default;
         ellipse_spectrum(float _a, float _b, 
                 glm::vec2 _center, glm::vec4 _color, 
-                int _n, float _step,
+                int _n, float _step_a, float _step_b,
                 ellipse_draw_function func) 
-        : a(_a), b(_b), center(_center), color(_color), n(_n), step(_step), set_vertices(func) {
+        : a(_a), b(_b), center(_center), color(_color), n(_n), step_a(_step_a), step_b(_step_b), set_vertices(func) {
             for (auto i = 0; i < n; i++) {
-                set_vertices(vertices, center, a + i * step, b + i * step);
+                set_vertices(vertices, center, a + i * step_a, b + i * step_b);
             }
             
         }
